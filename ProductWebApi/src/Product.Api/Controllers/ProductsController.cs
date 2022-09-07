@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Product.DataContracts.Requests;
 
 namespace Product.Api.Controllers
 {
@@ -14,7 +15,7 @@ namespace Product.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductAsync()
+        public async Task<IActionResult> GetProductsAsync([FromQuery] ProductsPaginationQueryParameters pagination)
         {
             try
             {
@@ -22,7 +23,67 @@ namespace Product.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred",ex);
+                _logger.LogError("An error occurred", ex);
+
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetProductAsync([FromRoute]  int id)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred", ex);
+
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProductAsync([FromRoute] int id)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred", ex);
+
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProductAsync(AddProductRequest addProductRequest)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred", ex);
+
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteProductAsync([FromRoute] int id)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred", ex);
 
                 return StatusCode(500);
             }
