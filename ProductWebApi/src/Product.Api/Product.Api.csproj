@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Product.DataContracts\Product.DataContracts.csproj" />
+    <ProjectReference Include="..\Product.Infra.CrossCutting.Ioc\Product.Infra.CrossCutting.Ioc.csproj" />
   </ItemGroup>
 
 </Project>

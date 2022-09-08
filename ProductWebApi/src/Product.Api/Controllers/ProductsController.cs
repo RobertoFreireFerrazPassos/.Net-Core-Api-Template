@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Product.DataContracts.Requests;
+using Product.Domain.Services;
 
 namespace Product.Api.Controllers
 {
@@ -9,17 +10,22 @@ namespace Product.Api.Controllers
     {
         private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(ILogger<ProductsController> logger)
+        private readonly IProductService _productService;
+
+        public ProductsController(
+            ILogger<ProductsController> logger,
+            IProductService productService)
         {
             _logger = logger;
+            _productService = productService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductsAsync([FromQuery] ProductsPaginationQueryParameters pagination)
+        public async Task<IActionResult> GetProductsAsync([FromQuery] ProductsPaginationQueryParameters pagination, CancellationToken token)
         {
             try
             {
-                return Ok();
+                return Ok(await _productService.GetProductsAsync(pagination, token));
             }
             catch (Exception ex)
             {
@@ -29,12 +35,19 @@ namespace Product.Api.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetProductAsync([FromRoute]  int id)
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetProductAsync([FromRoute] Guid id)
         {
             try
             {
-                return Ok();
+                var product = await _productService.GetProductAsync(id);
+
+                if (product is null) 
+                {
+                    return NotFound();
+                }
+
+                return Ok(product);
             }
             catch (Exception ex)
             {
@@ -44,11 +57,13 @@ namespace Product.Api.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProductAsync([FromRoute] int id)
+        [HttpPut]
+        public async Task<IActionResult> UpdateProductAsync(UpdateProductRequest updateProductRequest)
         {
             try
             {
+                await _productService.UpdateProductAsync(updateProductRequest);
+
                 return Ok();
             }
             catch (Exception ex)
@@ -64,6 +79,8 @@ namespace Product.Api.Controllers
         {
             try
             {
+                await _productService.AddProductAsync(addProductRequest);
+
                 return Ok();
             }
             catch (Exception ex)
@@ -74,11 +91,13 @@ namespace Product.Api.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteProductAsync([FromRoute] int id)
+        [HttpDelete("{id:Guid}")]
+        public async Task<IActionResult> DeleteProductAsync([FromRoute] Guid id)
         {
             try
             {
+                await _productService.DeleteProductAsync(id);
+
                 return Ok();
             }
             catch (Exception ex)
